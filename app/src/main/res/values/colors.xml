@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/cornFlowerBlue</color>
+    <color name="colorPrimaryDark">@color/cornFlowerBlueTwo</color>
+    <color name="colorAccent">@color/coolBlue</color>
+
+
+
+    <color name="white">#ffffff</color>
+    <color name="whiteTransparent">#40ffffff</color>
+    <color name="whiteTransparentMore">#d9ffffff</color>
+    <color name="cornFlowerBlue">#5692d7</color>
+    <color name="cornFlowerBlueTwo">#528bcc</color>
+    <color name="cornFlowerBlueTwoTransparent">#80528bcc</color>
+    <color name="cornFlowerBlueTwoTransparent2">#40528bcc</color>
+    <color name="coolBlue">#4680c2</color>
+</resources>
