@@ -1,25 +1,33 @@
 package com.kostikov.vkposter.backgroundchoose.adapter
 
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.os.Build
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.kostikov.vkposter.BuildConfig
 import com.kostikov.vkposter.R
-import com.kostikov.vkposter.backgroundchoose.BackgroundType
-import com.kostikov.vkposter.utils.dp2px
+import com.kostikov.vkposter.backgroundchoose.Background
+
 
 /**
  * @author Kostikov Aleksey.
  */
-class BackgroundAdapter: RecyclerView.Adapter<BackgroundAdapter.BackgroundViewHolder>() {
+
+typealias ClickHandler = (Int) -> Unit
+
+class BackgroundAdapter(private val data: List<Background> = backgroundData,
+                        private val onItemClick: ClickHandler? = null):
+                                    RecyclerView.Adapter<BackgroundAdapter.BackgroundViewHolder>(), BackgroundSelect {
+
+    private var selectedItemPosition: Int = 0
+    private var recyclerView: RecyclerView? = null
+
+    init { setHasStableIds(true) }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BackgroundAdapter.BackgroundViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.background_list_item, parent, false)
@@ -27,30 +35,37 @@ class BackgroundAdapter: RecyclerView.Adapter<BackgroundAdapter.BackgroundViewHo
         return BackgroundAdapter.BackgroundViewHolder(view)
     }
 
-    override fun getItemCount()= backgroundData.size
+    override fun getItemId(position: Int) = data[position].hashCode().toLong()
+
+    override fun getItemCount()= data.size
 
     override fun onBindViewHolder(holder: BackgroundAdapter.BackgroundViewHolder, position: Int) {
-        val item = backgroundData[position]
+        val item = data[position]
         holder.backgroundView.setBackgroundResource(item.colorDrawableResId!!)
-       /* when(item.type) {
-            BackgroundType.COLORED -> {
 
-                holder.backgroundView.setBackgroundResource(item.colorDrawableResId!!)
-            }
-            BackgroundType.BEACH -> {
+        if(position == selectedItemPosition) {
+            holder.backgroundView.setImageResource(R.drawable.drawable_list_selection)
+        } else {
+            holder.backgroundView.setImageResource(android.R.color.transparent)
+        }
 
-                holder.backgroundView.setBackgroundResource(item.colorDrawableResId!!)
-            }
-            BackgroundType.STARS -> {
-                holder.backgroundView.setBackgroundResource(item.colorDrawableResId!!)
-            }
-            BackgroundType.IMAGE -> {
+        holder.backgroundView.setOnClickListener {
+            onItemClick?.invoke(position)
+        }
+    }
 
-            }
-        }*/
+    override fun setSelectedItem(selectedPosition: Int) {
+        selectedItemPosition = selectedPosition
+        recyclerView?.smoothScrollToPosition(selectedItemPosition)
+
+        notifyDataSetChanged()
     }
 
     class BackgroundViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val backgroundView: View = itemView.findViewById(R.id.background_list_item_image)
+        val backgroundView: ImageView = itemView.findViewById(R.id.background_list_item_image)
     }
+}
+
+interface BackgroundSelect {
+    fun setSelectedItem(selectedPosition: Int)
 }
