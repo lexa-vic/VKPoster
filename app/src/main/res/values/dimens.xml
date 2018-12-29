@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bottomWindowHeight">56dp</dimen>
+    <dimen name="bottom_window_height">56dp</dimen>
+    <dimen name="background_icon_holder_wight">44dp</dimen>
+
+    <dimen name="background_icon_corner_radius">4dp</dimen>
+
+
 </resources>

@@ -83,17 +83,18 @@
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/postBackgroundRecyclerView"
             android:layout_width="0dp"
-            android:layout_height="@dimen/bottomWindowHeight"
+            android:layout_height="@dimen/bottom_window_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/savePostButton"
-            android:padding="8dp"/>
+            app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
 
     <View
             android:id="@+id/verticalDivider"
             android:layout_width="1dp"
-            android:layout_height="@dimen/bottomWindowHeight"
+            android:layout_height="@dimen/bottom_window_height"
             android:background="@color/greyDivider"
             app:layout_constraintStart_toEndOf="@id/postBackgroundRecyclerView"
             app:layout_constraintBottom_toBottomOf="parent"
