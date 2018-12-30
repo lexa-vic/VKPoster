@@ -5,7 +5,125 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/mainConstraintLayout"
         tools:context=".PostActivity">
+
+    <View android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:background="@color/greyDivider"
+          app:layout_constraintTop_toBottomOf="@id/toolbar"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.kostikov.vkposter.customview.SquareFrameLayout
+            android:id="@+id/postBackgroundHolder"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toTopOf="@id/horizontalDivider">
+        <ImageView
+                android:id="@+id/postBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:background="@color/cornFlowerBlue"
+                android:contentDescription="@null"/>
+
+        <ImageView
+                android:id="@+id/postTopBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_gravity="top"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_beach_top"
+                android:contentDescription="@null"/>
+
+        <ImageView
+                android:id="@+id/postBottomBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:scaleType="fitXY"
+                android:background="@drawable/bg_beach_bottom"
+                android:contentDescription="@null"/>
+    </com.kostikov.vkposter.customview.SquareFrameLayout>
+
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello World!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:layout_constraintBottom_toBottomOf="@id/postBackgroundHolder"
+            app:layout_constraintLeft_toLeftOf="@id/postBackgroundHolder"
+            app:layout_constraintRight_toRightOf="@id/postBackgroundHolder"
+            app:layout_constraintTop_toTopOf="@id/postBackgroundHolder"/>
+
+    <!--Bottom panel with backgrounds-->
+
+    <View
+            android:id="@+id/horizontalDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/greyDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/postBackgroundRecyclerView"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/postBackgroundRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/bottom_window_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
+
+    <View
+            android:id="@+id/verticalDivider"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/bottom_window_height"
+            android:background="@color/greyDivider"
+            app:layout_constraintStart_toEndOf="@id/postBackgroundRecyclerView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonHolder"/>
+
+    <FrameLayout
+            android:id="@+id/buttonHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/bottom_window_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/postBackgroundRecyclerView"
+            app:layout_constraintStart_toEndOf="@+id/verticalDivider"
+            app:layout_constraintHorizontal_bias="0.5">
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/savePostButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/send_button"
+                android:fontFamily="@font/roboto_medium"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/save"
+                android:textColor="@color/white"
+                android:textSize="13sp"/>
+    </FrameLayout>
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -41,87 +159,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <View android:layout_width="0dp"
-          android:layout_height="1dp"
-          android:background="@color/greyDivider"
-          app:layout_constraintTop_toBottomOf="@id/toolbar"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"/>
-
-    <ImageView
-            android:id="@+id/postBackgroundImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            android:contentDescription="@null"/>
-
-    <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:layout_constraintBottom_toBottomOf="@id/postBackgroundImage"
-            app:layout_constraintLeft_toLeftOf="@id/postBackgroundImage"
-            app:layout_constraintRight_toRightOf="@id/postBackgroundImage"
-            app:layout_constraintTop_toTopOf="@id/postBackgroundImage"/>
-
-    <!--Bottom panel with backgrounds-->
-
-    <View
-            android:id="@+id/horizontalDivider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/greyDivider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/postBackgroundRecyclerView"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/postBackgroundRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/bottom_window_height"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
-
-    <View
-            android:id="@+id/verticalDivider"
-            android:layout_width="1dp"
-            android:layout_height="@dimen/bottom_window_height"
-            android:background="@color/greyDivider"
-            app:layout_constraintStart_toEndOf="@id/postBackgroundRecyclerView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/savePostButton"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/savePostButton"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/postBackgroundRecyclerView"
-            app:layout_constraintStart_toEndOf="@+id/verticalDivider"
-            app:layout_constraintHorizontal_bias="0.5"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/send_button"
-            android:fontFamily="@font/roboto_medium"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:text="@string/save"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
