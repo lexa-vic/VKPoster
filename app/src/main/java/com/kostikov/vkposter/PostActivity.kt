@@ -1,6 +1,8 @@
 package com.kostikov.vkposter
 
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
@@ -21,12 +23,15 @@ import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundAdapter
 import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundSelect
 import com.kostikov.vkposter.backgroundchoose.adapter.backgroundData
 import com.kostikov.vkposter.backgroundchoose.layoutmanager.CenterLinearLayoutManager
+import com.kostikov.vkposter.savedata.FileSaveService
 import com.kostikov.vkposter.stickers.StickerListDialogFragment
 import com.kostikov.vkposter.textstyle.RoundBackgroundSpan
 import com.kostikov.vkposter.textstyle.textStyleList
 import com.mlsdev.rximagepicker.RxImagePicker
 import com.mlsdev.rximagepicker.Sources
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_post.*
 
 
@@ -35,13 +40,18 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     private var textStyleIdx = 0;
     private lateinit var textSpan: RoundBackgroundSpan
 
+    private lateinit var fileSaveService: FileSaveService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
+        fileSaveService = (application as AppApplication).getFileSaveService()
+
         initBottomBackgroundChooseWindow()
         initPostEditText()
         initStickers()
+        initSaveButton()
     }
 
     private fun closeKeyboard() {
@@ -52,8 +62,22 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         }
     }
 
+    private fun initSaveButton() {
+        savePostButton.setOnClickListener{
+            RxPermissions(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .filter { it }
+                .subscribe({
+                    createPostBitmap()
+                }, {
+                    it.printStackTrace()
+                })
+        }
+    }
+
     private fun initStickers() {
         addStickerImg.setOnClickListener {
+
             closeKeyboard()
             StickerListDialogFragment.newInstance(24)
                 .show(supportFragmentManager, null)
@@ -90,6 +114,31 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
             setTextStyle(textStyleIdx)
         }
     }
+
+    private fun createPostBitmap() {
+        closeKeyboard()
+        postEditText.isCursorVisible = false
+
+        val bitmap = Bitmap.createBitmap(
+            postBackgroundHolder.width,
+            postBackgroundHolder.height,
+            Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        postBackgroundHolder.draw(canvas)
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 1080, 1080, true)
+        bitmap.recycle()
+
+        fileSaveService.storePost(scaledBitmap)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+            }, {
+                it.printStackTrace()
+            })
+        postEditText.isCursorVisible = true
+    }
+
 
     private fun setTextStyle(styleListIdx: Int) {
         postEditText.setTextColor(resources.getColor(textStyleList[styleListIdx].textColor))
