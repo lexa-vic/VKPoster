@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mainConstraintLayout"
+        android:background="@color/white"
         tools:context=".PostActivity">
 
     <View android:layout_width="0dp"
@@ -53,7 +54,6 @@
                 android:contentDescription="@null"/>
     </com.kostikov.vkposter.backgroundchoose.customview.SquareFrameLayout>
 
-
     <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/postEditText"
             android:layout_width="wrap_content"
@@ -69,11 +69,11 @@
             android:ellipsize="end"
             android:padding="@dimen/post_edit_text_padding"
             tools:text=""
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             app:layout_constraintBottom_toBottomOf="@id/postBackgroundHolder"
             app:layout_constraintLeft_toLeftOf="@id/postBackgroundHolder"
             app:layout_constraintRight_toRightOf="@id/postBackgroundHolder"
             app:layout_constraintTop_toTopOf="@id/postBackgroundHolder"/>
+
 
     <!--Bottom panel with backgrounds-->
 
@@ -88,6 +88,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/postBackgroundRecyclerView"
+            android:background="@color/white"
             android:layout_width="0dp"
             android:layout_height="@dimen/bottom_window_height"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,6 +103,7 @@
             android:id="@+id/buttonHolder"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/bottom_window_height"
+            android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/postBackgroundRecyclerView"
@@ -142,6 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
