@@ -79,21 +79,13 @@
             android:id="@+id/postBackgroundRecyclerView"
             android:layout_width="0dp"
             android:layout_height="@dimen/bottom_window_height"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
+            app:layout_constraintEnd_toStartOf="@+id/buttonHolder"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
+            android:paddingEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <View
-            android:id="@+id/verticalDivider"
-            android:layout_width="1dp"
-            android:layout_height="@dimen/bottom_window_height"
-            android:background="@color/greyDivider"
-            app:layout_constraintStart_toEndOf="@id/postBackgroundRecyclerView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/buttonHolder"/>
 
     <FrameLayout
             android:id="@+id/buttonHolder"
@@ -102,8 +94,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/postBackgroundRecyclerView"
-            app:layout_constraintStart_toEndOf="@+id/verticalDivider"
+            app:layout_constraintStart_toEndOf="@+id/postBackgroundRecyclerView"
             app:layout_constraintHorizontal_bias="0.5">
+
+        <View
+                android:id="@+id/verticalDivider"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/bottom_window_height"
+                android:background="@color/greyDivider"
+                app:layout_constraintStart_toEndOf="@id/postBackgroundRecyclerView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buttonHolder"/>
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/savePostButton"
@@ -144,7 +145,7 @@
                 android:id="@+id/changeTextStyleImg"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center_horizontal"
                 android:src="@drawable/ic_toolbar_font"
                 android:contentDescription="@null"/>
 
@@ -153,12 +154,10 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="16dp"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center_horizontal"
                 android:src="@drawable/ic_toolbar_sticker"
                 android:contentDescription="@null"/>
 
     </androidx.appcompat.widget.Toolbar>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
