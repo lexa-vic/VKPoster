@@ -1,23 +1,27 @@
 package com.kostikov.vkposter
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.graphics.Point
+import android.net.Uri
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import com.kostikov.vkposter.backgroundchoose.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.kostikov.vkposter.backgroundchoose.Beach
+import com.kostikov.vkposter.backgroundchoose.Color
+import com.kostikov.vkposter.backgroundchoose.Image
+import com.kostikov.vkposter.backgroundchoose.Stars
 import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundAdapter
 import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundSelect
 import com.kostikov.vkposter.backgroundchoose.adapter.backgroundData
 import com.kostikov.vkposter.backgroundchoose.layoutmanager.CenterLinearLayoutManager
-import com.kostikov.vkposter.utils.px2dp
+import com.mlsdev.rximagepicker.RxImagePicker
+import com.mlsdev.rximagepicker.Sources
+import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_post.*
+
 
 class PostActivity : AppCompatActivity() {
 
@@ -25,7 +29,7 @@ class PostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
-        mainConstraintLayout.addOnLayoutChangeListener(LayoutWatcher())
+        //mainConstraintLayout.addOnLayoutChangeListener(LayoutWatcher())
         initBottomBackgroundChooseWindow()
     }
 
@@ -33,35 +37,70 @@ class PostActivity : AppCompatActivity() {
 
         postBackgroundRecyclerView.apply {
             layoutManager = CenterLinearLayoutManager(this@PostActivity).apply { orientation = HORIZONTAL }
-            adapter = BackgroundAdapter(){
+            adapter = BackgroundAdapter {
                 onSelectBackgroundTypeHandle(it)
             }
         }
     }
 
     private fun onSelectBackgroundTypeHandle(position: Int) {
-
         val background = backgroundData[position]
-        postTopBackgroundImage.visibility = View.GONE
-        postBottomBackgroundImage.visibility = View.GONE
 
         when(background) {
-            is Color -> postBackgroundImage.setBackgroundResource(background.colorDrawableResId!!)
-            is Beach -> {
+            is Color -> {
+                setHeaderAndFooterVisibility(View.GONE)
 
-                //postTopBackgroundImage.setBackgroundResource(background.topDrawableResId!!)
-                postTopBackgroundImage.visibility = View.VISIBLE
-                postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
-                postBottomBackgroundImage.visibility = View.VISIBLE
+                postBackgroundImage.setImageDrawable(resources.getDrawable(background.colorDrawableResId!!))
             }
-            is Stars -> postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
-            is Image -> {}
+            is Beach -> {
+                setHeaderAndFooterVisibility(View.VISIBLE)
+
+                postBackgroundImage.setImageDrawable(null)
+                postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
+            }
+            is Stars -> {
+                setHeaderAndFooterVisibility(View.GONE)
+
+                postBackgroundImage.setImageDrawable(null)
+                postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
+            }
+            is Image -> {
+                setHeaderAndFooterVisibility(View.GONE)
+
+                RxPermissions(this)
+                    .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .filter { it }
+                    .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
+                    .subscribe({
+                        setBackgroundFromUri(it)
+                    }, {
+                        it.printStackTrace()
+                    })
+
+            }
         }
 
         (postBackgroundRecyclerView.adapter as BackgroundSelect).setSelectedItem(position)
     }
 
-    inner class LayoutWatcher: View.OnLayoutChangeListener {
+    private fun setBackgroundFromUri(uri: Uri) {
+        val screenSize = Point()
+        windowManager.defaultDisplay.getSize(screenSize)
+
+        Glide.with(this)
+            .load(uri)
+            .apply(RequestOptions.centerCropTransform())
+            .into(postBackgroundImage)
+    }
+
+    private fun setHeaderAndFooterVisibility(visibility: Int){
+
+        postTopBackgroundImage.visibility = visibility
+        postBottomBackgroundImage.visibility = visibility
+    }
+
+
+   /* inner class LayoutWatcher: View.OnLayoutChangeListener {
 
         override fun onLayoutChange(
             v: View?,
@@ -76,5 +115,5 @@ class PostActivity : AppCompatActivity() {
         ) {
 
         }
-    }
+    }*/
 }
