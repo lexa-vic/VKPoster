@@ -137,13 +137,14 @@
                 android:textSize="13sp"/>
     </FrameLayout>
 
-    <androidx.appcompat.widget.Toolbar
+    <FrameLayout
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
 
         <TextView
                 android:layout_width="wrap_content"
@@ -155,21 +156,23 @@
 
         <ImageView
                 android:id="@+id/changeTextStyleImg"
-                android:layout_width="24dp"
+                android:layout_width="54dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start|center_horizontal"
+                android:padding="16dp"
                 android:src="@drawable/ic_toolbar_font"
                 android:contentDescription="@null"/>
 
         <ImageView
                 android:id="@+id/addStickerImg"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="54dp"
+                android:layout_height="match_parent"
+                android:padding="16dp"
                 android:layout_gravity="end|center_horizontal"
                 android:src="@drawable/ic_toolbar_sticker"
                 android:contentDescription="@null"/>
 
-    </androidx.appcompat.widget.Toolbar>
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
