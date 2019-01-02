@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.bumptech.glide.Glide
@@ -20,6 +21,7 @@ import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundAdapter
 import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundSelect
 import com.kostikov.vkposter.backgroundchoose.adapter.backgroundData
 import com.kostikov.vkposter.backgroundchoose.layoutmanager.CenterLinearLayoutManager
+import com.kostikov.vkposter.stickers.StickerListDialogFragment
 import com.kostikov.vkposter.textstyle.RoundBackgroundSpan
 import com.kostikov.vkposter.textstyle.textStyleList
 import com.mlsdev.rximagepicker.RxImagePicker
@@ -28,7 +30,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_post.*
 
 
-class PostActivity : AppCompatActivity() {
+class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
 
     private var textStyleIdx = 0;
     private lateinit var textSpan: RoundBackgroundSpan
@@ -39,6 +41,27 @@ class PostActivity : AppCompatActivity() {
 
         initBottomBackgroundChooseWindow()
         initPostEditText()
+        initStickers()
+    }
+
+    private fun closeKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    private fun initStickers() {
+        addStickerImg.setOnClickListener {
+            closeKeyboard()
+            StickerListDialogFragment.newInstance(24)
+                .show(supportFragmentManager, null)
+        }
+    }
+
+    override fun onStickerClicked(stickerId: Int) {
+
     }
 
     private fun initPostEditText() {
@@ -53,11 +76,8 @@ class PostActivity : AppCompatActivity() {
                 s?.setSpan(textSpan,0, len,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
         changeTextStyleImg.setOnClickListener {

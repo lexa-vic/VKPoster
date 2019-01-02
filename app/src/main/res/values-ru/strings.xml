@@ -3,5 +3,6 @@
 	<string name="toolbar_title">Новая запись</string>
 	<string name="save">Сохранить</string>
     <string name="post_text_hint">Что у вас нового?</string>
+    <string name="post_stickers">Стикеры</string>
 
 </resources>
