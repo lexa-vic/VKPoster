@@ -15,7 +15,7 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.kostikov.vkposter.customview.SquareFrameLayout
+    <com.kostikov.vkposter.backgroundchoose.customview.SquareFrameLayout
             android:id="@+id/postBackgroundHolder"
             android:layout_width="0dp"
             android:layout_height="300dp"
@@ -51,13 +51,24 @@
                 android:scaleType="fitXY"
                 android:background="@drawable/bg_beach_bottom"
                 android:contentDescription="@null"/>
-    </com.kostikov.vkposter.customview.SquareFrameLayout>
+    </com.kostikov.vkposter.backgroundchoose.customview.SquareFrameLayout>
 
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/postEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:hint="@string/post_text_hint"
+            android:inputType="textNoSuggestions|textMultiLine"
+            android:lineSpacingExtra="6sp"
+            android:textSize="24sp"
+            android:ellipsize="end"
+            android:padding="@dimen/post_edit_text_padding"
+            tools:text=""
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             app:layout_constraintBottom_toBottomOf="@id/postBackgroundHolder"
             app:layout_constraintLeft_toLeftOf="@id/postBackgroundHolder"
@@ -141,10 +152,11 @@
                 android:text="@string/toolbar_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
+
         <ImageView
                 android:id="@+id/changeTextStyleImg"
                 android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="start|center_horizontal"
                 android:src="@drawable/ic_toolbar_font"
                 android:contentDescription="@null"/>

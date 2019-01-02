@@ -5,5 +5,8 @@
 
     <dimen name="background_icon_corner_radius">4dp</dimen>
 
+    <dimen name="post_edit_text_padding">8dp</dimen>
+    <dimen name="text_background_corner_radius">5dp</dimen>
+
 
 </resources>

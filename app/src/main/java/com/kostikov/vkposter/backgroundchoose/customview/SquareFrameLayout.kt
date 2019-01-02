@@ -1,9 +1,8 @@
-package com.kostikov.vkposter.customview
+package com.kostikov.vkposter.backgroundchoose.customview
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import android.widget.ImageView
 
 /**
  * @author Kostikov Aleksey.
