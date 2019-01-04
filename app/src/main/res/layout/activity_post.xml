@@ -24,6 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:layout_constraintBottom_toTopOf="@id/horizontalDivider">
+
         <ImageView
                 android:id="@+id/postBackgroundImage"
                 android:layout_width="match_parent"
@@ -53,6 +54,10 @@
                 android:background="@drawable/bg_beach_bottom"
                 android:contentDescription="@null"/>
 
+        <com.kostikov.vkposter.stickers.MotionView
+                android:id="@+id/stickerMotionView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/postEditText"
@@ -70,6 +75,20 @@
                 android:padding="@dimen/post_edit_text_padding"
                 tools:text=""/>
 
+
+        <ImageView
+                android:id="@+id/postTrashBasket"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:alpha="0"
+                android:background="@drawable/drawable_bin_circle"
+                android:contentDescription="@null"
+                android:elevation="1dp"
+                android:padding="4dp"
+                android:scaleType="center"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:src="@drawable/ic_fab_trash"/>
     </com.kostikov.vkposter.backgroundchoose.customview.SquareFrameLayout>
 
 
@@ -137,6 +156,7 @@
                 android:textColor="@color/white"
                 android:textSize="13sp"/>
     </FrameLayout>
+
 
     <FrameLayout
             android:id="@+id/toolbar"

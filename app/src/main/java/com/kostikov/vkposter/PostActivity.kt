@@ -1,14 +1,13 @@
 package com.kostikov.vkposter
 
 import android.Manifest
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Point
+import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +23,11 @@ import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundSelect
 import com.kostikov.vkposter.backgroundchoose.adapter.backgroundData
 import com.kostikov.vkposter.backgroundchoose.layoutmanager.CenterLinearLayoutManager
 import com.kostikov.vkposter.savedata.FileSaveService
+import com.kostikov.vkposter.stickers.MotionView
 import com.kostikov.vkposter.stickers.StickerListDialogFragment
+import com.kostikov.vkposter.stickers.entity.ImageEntity
+import com.kostikov.vkposter.stickers.entity.MotionEntity
+import com.kostikov.vkposter.stickers.viewmodel.Layer
 import com.kostikov.vkposter.textstyle.RoundBackgroundSpan
 import com.kostikov.vkposter.textstyle.textStyleList
 import com.mlsdev.rximagepicker.RxImagePicker
@@ -82,10 +85,18 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
             StickerListDialogFragment.newInstance(24)
                 .show(supportFragmentManager, null)
         }
+
+        stickerMotionView.setMotionViewCallback(motionViewCallback)
     }
 
     override fun onStickerClicked(stickerId: Int) {
+        val layer = Layer()
+        val pica = BitmapFactory.decodeResource(resources, stickerId)
 
+        val entity = ImageEntity(layer, pica, stickerMotionView.getWidth(), stickerMotionView.getHeight())
+
+        stickerMotionView.addEntityAndPosition(entity)
+        entity.moveCenterTo(PointF(stickerMotionView.getWidth() / 4f, stickerMotionView.getHeight() / 4f))
     }
 
     private fun initPostEditText() {
@@ -143,9 +154,7 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     private fun setTextStyle(styleListIdx: Int) {
         postEditText.setTextColor(resources.getColor(textStyleList[styleListIdx].textColor))
 
-        textSpan = RoundBackgroundSpan(resources.getColor(textStyleList[styleListIdx].backgroundColor),
-            resources.getDimension(R.dimen.post_edit_text_padding),
-            resources.getDimension(R.dimen.text_background_corner_radius))
+        textSpan = RoundBackgroundSpan(resources.getColor(textStyleList[styleListIdx].backgroundColor), resources.getDimension(R.dimen.post_edit_text_padding), resources.getDimension(R.dimen.text_background_corner_radius))
         val str = postEditText.editableText.toString()
 
         postEditText.editableText.clear()
@@ -165,11 +174,17 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     private fun onSelectBackgroundTypeHandle(position: Int) {
         val background = backgroundData[position]
 
+        postTrashBasket.setBackgroundResource(R.drawable.drawable_bin)
+
         when(background) {
             is Color -> {
                 setHeaderAndFooterVisibility(View.GONE)
 
                 postBackgroundImage.setImageDrawable(resources.getDrawable(background.colorDrawableResId!!))
+
+                if (background.colorDrawableResId == R.drawable.background_white_full) {
+                    postTrashBasket.setBackgroundResource(R.drawable.drawable_bin_circle)
+                }
             }
             is Beach -> {
                 setHeaderAndFooterVisibility(View.VISIBLE)
@@ -219,20 +234,74 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     }
 
 
-   /* inner class LayoutWatcher: View.OnLayoutChangeListener {
+    private val motionViewCallback = object : MotionView.MotionViewCallback {
 
-        override fun onLayoutChange(
-            v: View?,
-            left: Int,
-            top: Int,
-            right: Int,
-            bottom: Int,
-            oldLeft: Int,
-            oldTop: Int,
-            oldRight: Int,
-            oldBottom: Int
-        ) {
+        private var isOnBasket = false
+
+        override fun onEntitySelected(entity: MotionEntity?) {
+            if  (entity != null) {
+                postTrashBasket.translationY = 300f
+
+                postTrashBasket.animate()
+                    .translationYBy(-300f)
+                    .alpha(1f)
+                    .setDuration(300)
+
+            } else {
+                postTrashBasket.animate()
+                    .translationYBy(300f)
+                    .alpha(0f)
+                    .setDuration(300)
+            }
+        }
+
+        override fun onEntityDoubleTap(entity: MotionEntity) {
 
         }
-    }*/
+
+        override fun onEntityTouch(entity: MotionEntity?, event: MotionEvent) {
+            val currX = event.x
+            val currY = event.y
+            val x0 = postTrashBasket.getX()
+            val x1 = postTrashBasket.getX() + postTrashBasket.getWidth()
+            val y0 = postTrashBasket.getY()
+            val y1 = postTrashBasket.getY() + postTrashBasket.getHeight()
+
+            if (currX >= x0 && currX <= x1 &&
+                currY >= y0 && currY <= y1) {
+
+                if (!isOnBasket) {
+                    postTrashBasket.setImageResource(R.drawable.ic_fab_trash_released)
+
+                    postTrashBasket.animate()
+                        .scaleX(1.2f)
+                        .scaleY(1.2f)
+                        .setDuration(100)
+                }
+
+                isOnBasket = true
+
+                if (event.action == MotionEvent.ACTION_UP) {
+                    stickerMotionView.deletedSelectedEntity()
+
+                    postTrashBasket.animate()
+                        .translationYBy(300f)
+                        .alpha(0f)
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(300)
+                }
+            } else {
+                if (isOnBasket) {
+                    postTrashBasket.setImageResource(R.drawable.ic_fab_trash)
+                    postTrashBasket.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(100)
+                }
+
+                isOnBasket = false
+            }
+        }
+    }
 }

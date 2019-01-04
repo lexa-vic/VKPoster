@@ -26,4 +26,6 @@
     <color name="backgroundThumbBlue">#d6e2f3</color>
     <color name="transparent">#00ffffff</color>
     <color name="subHeaderColor">#74a6df</color>
+
+    <color name="stroke_color">#8cf437</color>
 </resources>
