@@ -14,7 +14,7 @@ class AppApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        fileSaveService = FileManager(this)
+        fileSaveService = FileManager()
     }
 
     fun getFileSaveService(): FileSaveService = fileSaveService

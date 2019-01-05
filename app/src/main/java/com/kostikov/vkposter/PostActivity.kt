@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.bumptech.glide.Glide
@@ -23,6 +25,7 @@ import com.kostikov.vkposter.backgroundchoose.adapter.BackgroundSelect
 import com.kostikov.vkposter.backgroundchoose.adapter.backgroundData
 import com.kostikov.vkposter.backgroundchoose.layoutmanager.CenterLinearLayoutManager
 import com.kostikov.vkposter.savedata.FileSaveService
+import com.kostikov.vkposter.savedata.FileSaveService.Companion.FOLDER_NAME
 import com.kostikov.vkposter.stickers.MotionView
 import com.kostikov.vkposter.stickers.StickerListDialogFragment
 import com.kostikov.vkposter.stickers.entity.ImageEntity
@@ -34,14 +37,19 @@ import com.mlsdev.rximagepicker.RxImagePicker
 import com.mlsdev.rximagepicker.Sources
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_post.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
 
     private var textStyleIdx = 0;
     private lateinit var textSpan: RoundBackgroundSpan
+
+    private val compositeDisposable = CompositeDisposable()
 
     private lateinit var fileSaveService: FileSaveService
 
@@ -55,6 +63,12 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         initPostEditText()
         initStickers()
         initSaveButton()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        compositeDisposable.dispose()
     }
 
     private fun closeKeyboard() {
@@ -127,6 +141,8 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     }
 
     private fun createPostBitmap() {
+
+        Log.d("PostActivity", "start save")
         closeKeyboard()
         postEditText.isCursorVisible = false
 
@@ -139,14 +155,19 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 1080, 1080, true)
         bitmap.recycle()
 
-        fileSaveService.storePost(scaledBitmap)
+        // Create a media file name
+        val timeStamp = SimpleDateFormat("MMdd_HHmmss", Locale.getDefault()).format(Date())
+        val imageName = "VkPost_$timeStamp.jpg"
+        val saveInstanceStr = " .../$FOLDER_NAME/$imageName"
+        compositeDisposable.add(
+            fileSaveService.storePost(scaledBitmap, imageName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
+                Toast.makeText(this, getString(R.string.save_success) + saveInstanceStr, Toast.LENGTH_LONG).show()
             }, {
-                it.printStackTrace()
-            })
+                Toast.makeText(this, getString(R.string.save_fail), Toast.LENGTH_LONG).show()
+            }))
         postEditText.isCursorVisible = true
     }
 

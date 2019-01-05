@@ -1,15 +1,13 @@
 package com.kostikov.vkposter.savedata
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
+import com.kostikov.vkposter.savedata.FileSaveService.Companion.FOLDER_NAME
 import io.reactivex.Completable
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 /**
@@ -17,13 +15,17 @@ import java.util.*
  */
 
 interface FileSaveService {
-    fun storePost(bitmap: Bitmap): Completable
+    companion object {
+        val FOLDER_NAME = "VkPosts"
+    }
+
+    fun storePost(bitmap: Bitmap, imageName: String): Completable
 }
 
-class FileManager(private val context: Context): FileSaveService {
-    private val FOLDER_NAME = "VkPosts"
+class FileManager: FileSaveService {
 
-    override fun storePost(bitmap: Bitmap): Completable = Completable.fromAction {
+
+    override fun storePost(bitmap: Bitmap, imageName: String): Completable = Completable.fromAction {
         val mediaStorageDir = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), FOLDER_NAME
         )
@@ -33,10 +35,6 @@ class FileManager(private val context: Context): FileSaveService {
                 Log.d(FOLDER_NAME, "Failed to create directory")
             }
         }
-
-        // Create a media file name
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val imageName = "VkPost_$timeStamp.jpg"
 
         val selectedOutputPath = mediaStorageDir.getPath() + File.separator + imageName
         Log.d(FOLDER_NAME, "selected camera path $selectedOutputPath")

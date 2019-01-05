@@ -4,5 +4,7 @@
 	<string name="save">Сохранить</string>
     <string name="post_text_hint">Что у вас нового?</string>
     <string name="post_stickers">Стикеры</string>
+    <string name="save_success">Файл сохранен в </string>
+    <string name="save_fail">Ошибка сохранения</string>
 
 </resources>

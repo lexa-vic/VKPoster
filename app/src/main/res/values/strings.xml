@@ -4,6 +4,8 @@
     <string name="save">Save</string>
     <string name="post_text_hint">What\'s new?</string>
     <string name="post_stickers">Stickers</string>
+    <string name="save_success">File has been saved in </string>
+    <string name="save_fail">Save failed</string>
 
 
     <!-- Font Certs -->
