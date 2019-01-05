@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -142,7 +141,6 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
 
     private fun createPostBitmap() {
 
-        Log.d("PostActivity", "start save")
         closeKeyboard()
         postEditText.isCursorVisible = false
 
@@ -269,10 +267,12 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
                     .setDuration(300)
 
             } else {
-                postTrashBasket.animate()
-                    .translationYBy(300f)
-                    .alpha(0f)
-                    .setDuration(300)
+                if (postTrashBasket.alpha > 0) {
+                    postTrashBasket.animate()
+                        .translationYBy(300f)
+                        .alpha(0f)
+                        .setDuration(300)
+                }
             }
         }
 
@@ -323,6 +323,17 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
 
                 isOnBasket = false
             }
+
+            if (entity == null && event.action == MotionEvent.ACTION_DOWN) {
+                showKeyboard()
+            }
+        }
+    }
+
+    private fun showKeyboard() {
+        if (postEditText.requestFocus()) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
 }

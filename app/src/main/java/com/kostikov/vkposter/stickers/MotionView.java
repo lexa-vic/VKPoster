@@ -315,9 +315,7 @@ public class MotionView extends FrameLayout {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (motionViewCallback != null) {
-                motionViewCallback.onEntityTouch(selectedEntity, event);
-            }
+
             if (scaleGestureDetector != null) {
                 scaleGestureDetector.onTouchEvent(event);
                 rotateGestureDetector.onTouchEvent(event);
@@ -327,7 +325,13 @@ public class MotionView extends FrameLayout {
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 updateSelectionOnTap(event);
-            } else if (event.getAction() == MotionEvent.ACTION_UP ||
+            }
+
+            if (motionViewCallback != null) {
+                motionViewCallback.onEntityTouch(selectedEntity, event);
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_UP ||
                     event.getAction() == MotionEvent.ACTION_CANCEL) {
                 unselectEntity();
             }
