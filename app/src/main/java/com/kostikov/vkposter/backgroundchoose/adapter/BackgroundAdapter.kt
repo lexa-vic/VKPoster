@@ -5,8 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.kostikov.vkposter.R
 import com.kostikov.vkposter.backgroundchoose.Background
+import com.kostikov.vkposter.backgroundchoose.Beach
+import com.kostikov.vkposter.backgroundchoose.Image
+import com.kostikov.vkposter.backgroundchoose.Stars
+import com.kostikov.vkposter.utils.BackgroundGlideImageTarget
 
 
 /**
@@ -41,7 +49,22 @@ class BackgroundAdapter(private val data: List<Background> = backgroundData,
 
     override fun onBindViewHolder(holder: BackgroundAdapter.BackgroundViewHolder, position: Int) {
         val item = data[position]
-        holder.backgroundView.setBackgroundResource(item.colorDrawableResId!!)
+
+        when(item) {
+            is Image,
+            is Beach,
+            is Stars -> {
+                var requestOptions = RequestOptions()
+                requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(10))
+                Glide.with(holder.itemView.getContext())
+                    .load(item.colorDrawableResId!!)
+                    .apply(requestOptions)
+                    .into(BackgroundGlideImageTarget(holder.backgroundView))
+            }
+            else -> {
+                holder.backgroundView.setBackgroundResource(item.listColorDrawableResId!!)
+            }
+        }
 
         if(position == selectedItemPosition) {
             holder.backgroundView.setImageResource(R.drawable.drawable_list_selection)
@@ -62,7 +85,7 @@ class BackgroundAdapter(private val data: List<Background> = backgroundData,
     }
 
     class BackgroundViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val backgroundView: ImageView = itemView.findViewById(R.id.background_list_item_image)
+        val backgroundView: ImageView = itemView.findViewById(R.id.backgroundListImage)
     }
 }
 
