@@ -69,12 +69,14 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         compositeDisposable.dispose()
     }
 
-    private fun closeKeyboard() {
-        val view = this.currentFocus
-        if (view != null) {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
+    override fun onStickerClicked(stickerId: Int) {
+        val layer = Layer()
+        val pica = BitmapFactory.decodeResource(resources, stickerId)
+
+        val entity = ImageEntity(layer, pica, stickerMotionView.getWidth(), stickerMotionView.getHeight())
+
+        stickerMotionView.addEntityAndPosition(entity)
+        entity.moveCenterTo(PointF(stickerMotionView.getWidth() / 4f, stickerMotionView.getHeight() / 4f))
     }
 
     private fun initSaveButton() {
@@ -99,16 +101,6 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         }
 
         stickerMotionView.setMotionViewCallback(motionViewCallback)
-    }
-
-    override fun onStickerClicked(stickerId: Int) {
-        val layer = Layer()
-        val pica = BitmapFactory.decodeResource(resources, stickerId)
-
-        val entity = ImageEntity(layer, pica, stickerMotionView.getWidth(), stickerMotionView.getHeight())
-
-        stickerMotionView.addEntityAndPosition(entity)
-        entity.moveCenterTo(PointF(stickerMotionView.getWidth() / 4f, stickerMotionView.getHeight() / 4f))
     }
 
     private fun initPostEditText() {
@@ -156,6 +148,7 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         val timeStamp = SimpleDateFormat("MMdd_HHmmss", Locale.getDefault()).format(Date())
         val imageName = "VkPost_$timeStamp.jpg"
         val saveInstanceStr = " .../$FOLDER_NAME/$imageName"
+
         compositeDisposable.add(
             fileSaveService.storePost(scaledBitmap, imageName)
             .subscribeOn(Schedulers.io())
@@ -172,7 +165,9 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     private fun setTextStyle(styleListIdx: Int) {
         postEditText.setTextColor(resources.getColor(textStyleList[styleListIdx].textColor))
 
-        textSpan = RoundBackgroundSpan(resources.getColor(textStyleList[styleListIdx].backgroundColor), resources.getDimension(R.dimen.post_edit_text_padding), resources.getDimension(R.dimen.text_background_corner_radius))
+        textSpan = RoundBackgroundSpan(resources.getColor(textStyleList[styleListIdx].backgroundColor),
+            resources.getDimension(R.dimen.post_edit_text_padding),
+            resources.getDimension(R.dimen.text_background_corner_radius))
         val str = postEditText.editableText.toString()
 
         postEditText.editableText.clear()
@@ -331,6 +326,14 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         if (postEditText.requestFocus()) {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        }
+    }
+
+    private fun closeKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

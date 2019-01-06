@@ -1,15 +1,13 @@
 package com.kostikov.vkposter.backgroundchoose
 
 import com.kostikov.vkposter.R
-import java.io.Serializable
 
 /**
  * @author Kostikov Aleksey.
  */
 
 sealed class Background(val colorDrawableResId: Int? = R.drawable.background_white_full,
-                        val listColorDrawableResId: Int? = R.drawable.background_white): Serializable {
-}
+                        val listColorDrawableResId: Int? = R.drawable.background_white)
 
 class Color(colorDrawableResId: Int?, listColorDrawableResId: Int?): Background(colorDrawableResId, listColorDrawableResId)
 

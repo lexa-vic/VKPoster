@@ -30,7 +30,7 @@ public class MotionView extends FrameLayout {
     private static final String TAG = MotionView.class.getSimpleName();
 
     public interface Constants {
-        float SELECTED_LAYER_ALPHA = 0.15F;
+        float SELECTED_LAYER_ALPHA = 1F;
     }
 
     public interface MotionViewCallback {
@@ -242,11 +242,14 @@ public class MotionView extends FrameLayout {
     private void selectEntity(@Nullable MotionEntity entity, boolean updateCallback) {
         if (selectedEntity != null) {
             selectedEntity.setIsSelected(false);
+
         }
         if (entity != null) {
             entity.setIsSelected(true);
+            bringLayerToFront(entity);
         }
         selectedEntity = entity;
+
         invalidate();
         if (updateCallback && motionViewCallback != null) {
             motionViewCallback.onEntitySelected(entity);
