@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,8 +93,6 @@ public class MotionView extends FrameLayout {
         this.moveGestureDetector = new MoveGestureDetector(context, new MoveListener());
         this.gestureDetectorCompat = new GestureDetectorCompat(context, new TapsListener());
 
-        setOnTouchListener(onTouchListener);
-
         updateUI();
     }
 
@@ -155,6 +152,35 @@ public class MotionView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         drawAllEntities(canvas);
         super.onDraw(canvas);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (scaleGestureDetector != null) {
+            scaleGestureDetector.onTouchEvent(event);
+            rotateGestureDetector.onTouchEvent(event);
+            moveGestureDetector.onTouchEvent(event);
+            gestureDetectorCompat.onTouchEvent(event);
+        }
+
+        if (motionViewCallback != null) {
+            motionViewCallback.onEntityTouch(selectedEntity, event);
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_UP ||
+                event.getAction() == MotionEvent.ACTION_CANCEL) {
+            unselectEntity();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            updateSelectionOnTap(event);
+        }
+
+        return selectedEntity != null;
     }
 
     /**
@@ -310,34 +336,6 @@ public class MotionView extends FrameLayout {
     }
 
     // gesture detectors
-
-    private final View.OnTouchListener onTouchListener = new View.OnTouchListener() {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-
-            if (scaleGestureDetector != null) {
-                scaleGestureDetector.onTouchEvent(event);
-                rotateGestureDetector.onTouchEvent(event);
-                moveGestureDetector.onTouchEvent(event);
-                gestureDetectorCompat.onTouchEvent(event);
-            }
-
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                updateSelectionOnTap(event);
-            }
-
-            if (motionViewCallback != null) {
-                motionViewCallback.onEntityTouch(selectedEntity, event);
-            }
-
-            if (event.getAction() == MotionEvent.ACTION_UP ||
-                    event.getAction() == MotionEvent.ACTION_CANCEL) {
-                unselectEntity();
-            }
-            return true;
-        }
-    };
 
     private class TapsListener extends GestureDetector.SimpleOnGestureListener {
         @Override
