@@ -37,10 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_gravity="top"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:scaleType="centerCrop"
-                android:background="@drawable/bg_beach_top"
                 android:contentDescription="@null"/>
 
         <ImageView
@@ -48,10 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_gravity="bottom"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:scaleType="fitXY"
-                android:background="@drawable/bg_beach_bottom"
                 android:contentDescription="@null"/>
 
         <com.kostikov.vkposter.stickers.MotionView

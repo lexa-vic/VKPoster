@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -194,11 +193,11 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         val background = backgroundData[position]
 
         postTrashBasket.setBackgroundResource(R.drawable.drawable_bin)
+        postBottomBackgroundImage.setImageResource(0)
+        postTopBackgroundImage.setImageResource(0)
 
         when(background) {
             is Color -> {
-                setHeaderAndFooterVisibility(View.GONE)
-
                 postBackgroundImage.setImageDrawable(resources.getDrawable(background.colorDrawableResId!!))
 
                 if (background.colorDrawableResId == R.drawable.background_white_full) {
@@ -206,20 +205,27 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
                 }
             }
             is Beach -> {
-                setHeaderAndFooterVisibility(View.VISIBLE)
+                Glide.with(this)
+                    .load(background.topDrawableResId!!)
+                    .into(postTopBackgroundImage)
 
-                postBackgroundImage.setImageDrawable(null)
-                postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
+                Glide.with(this)
+                    .load(background.bodyDrawableResId!!)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(postBackgroundImage)
+
+                Glide.with(this)
+                    .load(background.bottomDrawableResId!!)
+                    .into(postBottomBackgroundImage)
             }
             is Stars -> {
-                setHeaderAndFooterVisibility(View.GONE)
 
-                postBackgroundImage.setImageDrawable(null)
-                postBackgroundImage.setBackgroundResource(background.bodyDrawableResId!!)
+                Glide.with(this)
+                    .load(background.bodyDrawableResId!!)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(postBackgroundImage)
             }
             is Image -> {
-                setHeaderAndFooterVisibility(View.GONE)
-
                 RxPermissions(this)
                     .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                     .filter { it }
@@ -246,13 +252,6 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
             .into(postBackgroundImage)
     }
 
-    private fun setHeaderAndFooterVisibility(visibility: Int){
-
-        postTopBackgroundImage.visibility = visibility
-        postBottomBackgroundImage.visibility = visibility
-    }
-
-
     private val motionViewCallback = object : MotionView.MotionViewCallback {
 
         private var isOnBasket = false
@@ -276,9 +275,7 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
             }
         }
 
-        override fun onEntityDoubleTap(entity: MotionEntity) {
-
-        }
+        override fun onEntityDoubleTap(entity: MotionEntity) {}
 
         override fun onEntityTouch(entity: MotionEntity?, event: MotionEvent) {
             val currX = event.x
