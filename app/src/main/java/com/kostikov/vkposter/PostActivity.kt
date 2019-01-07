@@ -67,6 +67,7 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
         super.onDestroy()
 
         compositeDisposable.dispose()
+        Glide.get(this).clearMemory()
     }
 
     override fun onStickerClicked(stickerId: Int) {

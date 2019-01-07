@@ -65,7 +65,6 @@
                     android:inputType="textNoSuggestions|textMultiLine"
                     android:lineSpacingExtra="6sp"
                     android:textSize="24sp"
-                    android:ellipsize="end"
                     android:padding="@dimen/post_edit_text_padding"
                     tools:text=""/>
 
@@ -108,8 +107,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toStartOf="@+id/buttonHolder"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
 

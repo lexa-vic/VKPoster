@@ -46,7 +46,10 @@ class RoundBackgroundSpan(backgroundColor: Int, private val padding: Float, priv
     ) {
 
         val width = p.measureText(text, start, end) + 2f * padding
-        val shift = (right - width) / 2f
+        var shift = (right - width) / 2f
+        if (shift < 0) {
+            shift = 0f
+        }
 
         rect.set(shift, top.toFloat(), right - shift, bottom.toFloat())
 
@@ -56,6 +59,7 @@ class RoundBackgroundSpan(backgroundColor: Int, private val padding: Float, priv
             path.reset()
             val dr = width - prevWidth
             val diff = -Math.signum(dr) * Math.min(2f * radius, Math.abs(dr / 2f)) / 2f
+
             path.moveTo(
                 prevLeft, prevBottom - radius
             )
