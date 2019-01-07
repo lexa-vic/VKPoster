@@ -189,14 +189,16 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     }
 
     private fun onSelectBackgroundTypeHandle(position: Int) {
+        var successSelect = true;
         val background = backgroundData[position]
 
         postTrashBasket.setBackgroundResource(R.drawable.drawable_bin)
-        postBottomBackgroundImage.setImageResource(0)
-        postTopBackgroundImage.setImageResource(0)
 
         when(background) {
             is Color -> {
+                postBottomBackgroundImage.setImageResource(0)
+                postTopBackgroundImage.setImageResource(0)
+
                 postBackgroundImage.setImageDrawable(resources.getDrawable(background.colorDrawableResId!!))
 
                 if (background.colorDrawableResId == R.drawable.background_white_full) {
@@ -218,6 +220,8 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
                     .into(postBottomBackgroundImage)
             }
             is Stars -> {
+                postBottomBackgroundImage.setImageResource(0)
+                postTopBackgroundImage.setImageResource(0)
 
                 Glide.with(this)
                     .load(background.bodyDrawableResId!!)
@@ -225,12 +229,20 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
                     .into(postBackgroundImage)
             }
             is Image -> {
+                successSelect = false
                 RxPermissions(this)
                     .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                     .filter { it }
                     .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
                     .subscribe({
+                        successSelect = true
+
+                        postBottomBackgroundImage.setImageResource(0)
+                        postTopBackgroundImage.setImageResource(0)
+
                         setBackgroundFromUri(it)
+
+                        (postBackgroundRecyclerView.adapter as BackgroundSelect).setSelectedItem(position)
                     }, {
                         it.printStackTrace()
                     })
@@ -238,7 +250,9 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
             }
         }
 
-        (postBackgroundRecyclerView.adapter as BackgroundSelect).setSelectedItem(position)
+        if (successSelect) {
+            (postBackgroundRecyclerView.adapter as BackgroundSelect).setSelectedItem(position)
+        }
     }
 
     private fun setBackgroundFromUri(uri: Uri) {
