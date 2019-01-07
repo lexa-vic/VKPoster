@@ -88,7 +88,7 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
         init {
             image.setOnClickListener {
                 if (listener != null) {
-                    listener!!.onStickerClicked(itemView.tag as Int)
+                    listener!!.onStickerClicked(itemView.getTag(R.id.fragment_sticker_list_dialog_item_image) as Int)
                     dismiss()
                 }
             }
@@ -110,7 +110,7 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
                 .into(holder.image)
 
 
-            holder.itemView.tag = imageResId
+            holder.itemView.setTag(R.id.fragment_sticker_list_dialog_item_image, imageResId)
         }
 
         override fun getItemCount() = mItemCount

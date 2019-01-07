@@ -1,7 +1,10 @@
 package com.kostikov.vkposter
 
 import android.Manifest
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -239,9 +242,6 @@ class PostActivity : AppCompatActivity(), StickerListDialogFragment.Listener {
     }
 
     private fun setBackgroundFromUri(uri: Uri) {
-        val screenSize = Point()
-        windowManager.defaultDisplay.getSize(screenSize)
-
         Glide.with(this)
             .load(uri)
             .apply(RequestOptions.centerCropTransform())
